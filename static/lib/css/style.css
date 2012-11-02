@@ -70,7 +70,7 @@ background-color: #FFF;
 }
 
 #logs td {
-  word-wrap: break-word;
+  word-break: break-word;
   font-size: 11px;
   vertical-align: text-top;
 }
