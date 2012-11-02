@@ -50,7 +50,6 @@ function pageload(hash) {
     // Take the hash data and populate the search fields
     $('#queryinput').val(window.hashjson.search);
     $('#timeinput').val(window.hashjson.timeframe);
-
     // Figure out defaults. Need more here
     if(typeof window.hashjson.graphmode == 'undefined')
       window.hashjson.graphmode = 'count';
@@ -75,7 +74,11 @@ function pageload(hash) {
       getPage();
       break;
     }
-
+    if (window.hashjson.order == 'asc') {
+      $('#sortorder').attr('checked',true);
+    } else {
+      $('#sortorder').attr('checked',false);
+    }
   } else {
     resetAll();
   }
@@ -633,15 +636,25 @@ function pageLinks() {
   if (end < resultjson.hits.total)
   {
     //str += "<i data-action='nextpage' class='page icon-arrow-right jlink'></i> "
-    str += "<td width='1%'><a data-action='nextpage' class='page jlink'>Older</a></td>"
+    if ($('#sortorder').attr('checked')) {
+      str += "<td width='1%'><a data-action='nextpage' class='page jlink'>Newer</a></td>"
+    } else {
+      str += "<td width='1%'><a data-action='nextpage' class='page jlink'>Older</a></td>"
+    }
   }
   str += "<td width='99%'><strong>" + window.hashjson.offset + " TO " + end + "</strong></td>";
   if (window.hashjson.offset - perpage >= 0) {
     //str += "<i data-action='firstpage' " +
     //  "class='page jlink icon-circle-arrow-left'></i> " +
     //  "<i data-action='prevpage' class='page icon-arrow-left jlink'></i> ";
-    str += "<td width='1%'><a data-action='prevpage' class='page jlink'>Newer</a></td> " +
-    "<td width='1%'> <a data-action='firstpage' class='page jlink'>Newest</a></td>";
+    if ($('#sortorder').attr('checked')) {
+      str += "<td width='1%'><a data-action='prevpage' class='page jlink'>Older</a></td> " +
+      "<td width='1%'> <a data-action='firstpage' class='page jlink'>Oldest</a></td>";
+    } else {
+      str += "<td width='1%'><a data-action='prevpage' class='page jlink'>Newer</a></td> " +
+      "<td width='1%'> <a data-action='firstpage' class='page jlink'>Newest</a></td>";
+    }
+
   }
   str += "</tr></table>";
 
@@ -961,12 +974,21 @@ function feedLinks(obj) {
 }
 
 $(function () {
+  $('#sortorder').click(function () {
+	$('form').submit();
+  });
   $('form').submit(function () {
 
     if (window.hashjson.search != $('#queryinput').val()) {
       window.hashjson.offset = 0;
       window.hashjson.search = $('#queryinput').val();
     }
+    if ($('#sortorder').attr('checked')) {
+      window.hashjson.order='asc';
+    } else {
+      window.hashjson.order='desc';
+    }
+
     window.hashjson.stamp = new Date().getTime();
 
     if (window.hashjson.timeframe == "custom")

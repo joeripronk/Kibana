@@ -16,7 +16,7 @@ require 'compat'
   hash::   Base64 encoded JSON string
 =end
 class ClientRequest
-  attr_accessor :search,:from,:to,:offset,:fields,:analyze
+  attr_accessor :search,:from,:to,:offset,:fields,:analyze,:order
 
   def initialize(hash)
     @request = JSON.parse(Base64.decode64(hash))
@@ -33,6 +33,11 @@ class ClientRequest
       KibanaConfig::Default_fields : @request['fields']
 
     @analyze = @request['analyze_field']
+    if @request['order']
+      @order = @request['order']
+    else
+      @order = 'desc'
+    end
 
     # Sort out proper to and from.
     # This eventually needs to move into javascript

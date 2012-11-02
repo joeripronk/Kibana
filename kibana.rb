@@ -61,8 +61,11 @@ get '/api/search/:hash/?:segment?' do
   segment = params[:segment].nil? ? 0 : params[:segment].to_i
 
   req     = ClientRequest.new(params[:hash])
-  query   = SortedQuery.new(req.search,req.from,req.to,req.offset)
-  indices = Kelastic.index_range(req.from,req.to)
+
+  query   = SortedQuery.new(req.search,req.from,req.to,req.offset,KibanaConfig::Per_page,"@timestamp",req.order)
+
+  indices = Kelastic.index_range(req.from,req.to,0,req.order)
+
   result  = KelasticMulti.new(query,indices)
 
   # Not sure this is required. This should be able to be handled without
@@ -84,7 +87,7 @@ get '/api/graph/:mode/:interval/:hash/?:segment?' do
   when "mean"
     query   = StatsHistogram.new(req.search,req.from,req.to,req.analyze,params[:interval].to_i)
   end
-  indices = Kelastic.index_range(req.from,req.to)
+  indices = Kelastic.index_range(req.from,req.to,0,req.order)
   result  = KelasticSegment.new(query,indices,segment)
 
   JSON.generate(result.response)
@@ -121,7 +124,7 @@ get '/api/analyze/:field/trend/:hash' do
   count_end     = KelasticResponse.count_field(result_end.response,fields)
 
   query_begin   = SortedQuery.new(req.search,req.from,req.to,0,limit,'@timestamp','asc')
-  indices_begin = Kelastic.index_range(req.from,req.to).reverse
+  indices_begin = Kelastic.index_range(req.from,req.to,0,'asc')
   result_begin  = KelasticMulti.new(query_begin,indices_begin)
   count_begin   = KelasticResponse.count_field(result_begin.response,fields)
 
@@ -171,8 +174,8 @@ get '/api/analyze/:field/score/:hash' do
   limit = KibanaConfig::Analyze_limit
   show  = KibanaConfig::Analyze_show
   req     = ClientRequest.new(params[:hash])
-  query   = SortedQuery.new(req.search,req.from,req.to,0,limit)
-  indices = Kelastic.index_range(req.from,req.to)
+  query   = SortedQuery.new(req.search,req.from,req.to,0,limit,"@timestamp",req.order)
+  indices = Kelastic.index_range(req.from,req.to,0,req.order)
   result  = KelasticMulti.new(query,indices)
   fields = Array.new
   fields = params[:field].split(',,')
@@ -247,8 +250,8 @@ get '/rss/:hash/?:count?' do
   to    = Time.now
 
   req     = ClientRequest.new(params[:hash])
-  query   = SortedQuery.new(req.search,from,to,0,count)
-  indices = Kelastic.index_range(from,to)
+  query   = SortedQuery.new(req.search,from,to,0,count,"@timestamp",req.order)
+  indices = Kelastic.index_range(from,to,0,req.order)
   result  = KelasticMulti.new(query,indices)
   flat    = KelasticResponse.flatten_response(result.response,req.fields)
 
@@ -282,8 +285,8 @@ get '/export/:hash/?:count?' do
   sep   = KibanaConfig::Export_delimiter
 
   req     = ClientRequest.new(params[:hash])
-  query   = SortedQuery.new(req.search,req.from,req.to,0,count)
-  indices = Kelastic.index_range(req.from,req.to)
+  query   = SortedQuery.new(req.search,req.from,req.to,0,count,"@timestamp",req.order)
+  indices = Kelastic.index_range(req.from,req.to,0,req.order)
   result  = KelasticMulti.new(query,indices)
   flat    = KelasticResponse.flatten_response(result.response,req.fields)
 
