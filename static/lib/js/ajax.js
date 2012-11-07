@@ -133,6 +133,12 @@ function getPage() {
         // Determine fields to be displayed
         var fields = window.hashjson.fields.length == 0 ?
           resultjson.kibana.default_fields : window.hashjson.fields
+        if (window.hashjson.fields.length == 0) {
+                if (fields.length > 0) {
+                        window.hashjson.fields=fields;
+                }
+        }
+
 
         // Create 'Columns' section
         $('#fields').html("<h5><i class='icon-columns'></i> Columns</h5>" +
