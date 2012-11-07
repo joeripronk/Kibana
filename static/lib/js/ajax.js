@@ -643,9 +643,9 @@ function pageLinks() {
   {
     //str += "<i data-action='nextpage' class='page icon-arrow-right jlink'></i> "
     if ($('#sortorder').attr('checked')) {
-      str += "<td width='1%'><a data-action='nextpage' class='page jlink'>Newer</a></td>"
+      str += "<td width='1%'><a data-action='nextpage' class='page jlink' style='word-break: normal'>Newer</a></td>"
     } else {
-      str += "<td width='1%'><a data-action='nextpage' class='page jlink'>Older</a></td>"
+      str += "<td width='1%'><a data-action='nextpage' class='page jlink' style='word-break: normal'>Older</a></td>"
     }
   }
   str += "<td width='99%'><strong>" + window.hashjson.offset + " TO " + end + "</strong></td>";
@@ -654,11 +654,11 @@ function pageLinks() {
     //  "class='page jlink icon-circle-arrow-left'></i> " +
     //  "<i data-action='prevpage' class='page icon-arrow-left jlink'></i> ";
     if ($('#sortorder').attr('checked')) {
-      str += "<td width='1%'><a data-action='prevpage' class='page jlink'>Older</a></td> " +
-      "<td width='1%'> <a data-action='firstpage' class='page jlink'>Oldest</a></td>";
+      str += "<td width='1%'><a data-action='prevpage' class='page jlink' style='word-break: normal'>Older</a></td> " +
+      "<td width='1%'> <a data-action='firstpage' class='page jlink' style='word-break: normal'>Oldest</a></td>";
     } else {
-      str += "<td width='1%'><a data-action='prevpage' class='page jlink'>Newer</a></td> " +
-      "<td width='1%'> <a data-action='firstpage' class='page jlink'>Newest</a></td>";
+      str += "<td width='1%'><a data-action='prevpage' class='page jlink' style='word-break: normal'>Newer</a></td> " +
+      "<td width='1%'> <a data-action='firstpage' class='page jlink' style='word-break: normal'>Newest</a></td>";
     }
 
   }
